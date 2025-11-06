@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Demo Video</title>
+<style>
+    :root {
+        color-scheme: dark;
+    }
+    @font-face {
+        font-family: 'FacadeSud';
+        src: url('../../fonts/Facade-Sud-Ouest.otf') format('opentype');
+        font-display: swap;
+    }
+    body {
+        margin:0;
+        font-family: 'FacadeSud', Arial, sans-serif;
+        background:#000 url('../bg.jpg') center center / cover no-repeat fixed;
+        color:#fff;
+        display:flex;
+        flex-direction:column;
+        min-height:100vh;
+        position:relative;
+    }
+    body::before,body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1}
+    body::before{background:repeating-radial-gradient(circle at 25% 25%,rgba(255,255,255,.045)0 2px,transparent 2px 4px),repeating-linear-gradient(90deg,rgba(255,255,255,.03)0 1px,transparent 1px 2px);mix-blend-mode:overlay;animation:grainShift 9s linear infinite;opacity:.55}
+    /* Removed dark upward gradient overlays; keep subtle scanlines only */
+    body::after{background:repeating-linear-gradient(0deg,rgba(255,255,255,.05)0 1px,transparent 1px 3px),repeating-linear-gradient(90deg,rgba(255,255,255,.05)0 1px,transparent 1px 3px);mix-blend-mode:soft-light;animation:scanScroll 6s linear infinite;opacity:.28}
+    @keyframes grainShift{0%{transform:translate(0,0)}50%{transform:translate(-2%,1%)}100%{transform:translate(0,0)}}
+    @keyframes scanScroll{0%{background-position:0 0,0 0,0 0}100%{background-position:0 100px,0 200px,0 160px}}
+    header, footer {
+        padding:12px 20px;
+        font-size:14px;
+        letter-spacing:2px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        background:#0a0a0a;
+        border-bottom:1px solid #222;
+    }
+    header { border-bottom:1px solid #222; }
+    footer { border-top:1px solid #222; justify-content:center; }
+    main {
+        flex:1;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        position:relative;
+        padding:20px;
+        background:transparent; /* removed semi-transparent film */
+        z-index:2;
+    }
+    .video-wrapper {
+        width:100%;
+        max-width:1280px;
+        aspect-ratio:16/9;
+        position:relative;
+        box-shadow:0 0 40px rgba(255,255,255,0.15);
+        background:transparent;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        z-index:10;
+    }
+        .edge-frame {
+            box-sizing:border-box;
+            border:28px solid transparent;
+            border-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFQAAABUCAYAAAAcaxDBAAADLklEQVR4AeyZgUkDURBEYwqxOQuwFguwORtRAge5/5bLONlVgo4QknFnZ/+9O5aI55P58/H++rl/qfa99/JZ+d36JdN5ufmu3wbqDvhv/gAdvuMB+tNAuY847/nl7Wn/Yp167718Zl3NU3XmXWbcerl5zFf9eUJJrKkDtAmQ7QFKIk1dgHL/cGdQN+efOE/lcT77WWce/ayzn1r1F6AcEO0RCFCPl3QHqETkGe4BukzgjlmK3xDsp/5GxGJRO24xDwietw104Ex/KiJAh29ngP42UO4kap6HO4WafpXX9XO+0u48nj9PKAk2dYA2AbI9QEmkqQtQ7phmvmznPO4kBtCvNPuVVvNVfwGqGlK/TSBAb/OxqwFqI7vdcOYO6u6Qg3Fjv1bnU/Wxg2xB5JcndAMz9RagUyS3nADdQEy9SaDcERysdtaj1Xkeal6f0uyXQFVg6iuBAF15tFWAthGuAQUodyZ3xNquFfN0x6yD86k5rVsvQDkg2iMQoB4v6Q5QicgznLkjqblTqNU45in/rj7ykfOpp68nT+jIbbuGBOiVxcinAB3BeA0pQN2dovyqfj3Kz3zifGo1lX5q9hegNER7BALU4yXdASoReYYClN/TqFU8/dSqf7qu5qs6z6P8BSgDoj0CAerxku4AlYg8QwGqvmcxnjuF/dTsH9Ylzp3P66FmHnUBWk6UX1gEAtTCpc0BqhlZjgKUO4Npbl35mT+nu') 28 / 28px / 0 round;
+            /* 给内部视频留出边框显示空间 */
+            position:relative;
+            padding:0; /* 清理默认 */
+        }
+
+        .edge-frame > video,
+        .edge-frame > iframe {
+            position:absolute;
+            inset:28px; /* 留出与 border 等宽的内边距，这样边框清晰可见 */
+            width:calc(100% - 56px);
+            height:calc(100% - 56px);
+            object-fit:cover;
+            background:transparent;
+            display:block;
+        }
+    a.back-link {
+        color:#ffef60;
+        text-decoration:none;
+        font-weight:bold;
+        position:absolute;
+        top:12px;
+        right:16px;
+        font-size:12px;
+        background:rgba(0,0,0,0.6);
+        padding:4px 8px;
+        border:1px solid #333;
+        border-radius:4px;
+        letter-spacing:1px;
+    }
+    .fade-in { animation:fadeIn .8s ease forwards; opacity:0; }
+    @keyframes fadeIn { to { opacity:1; } }
+    /* Rectangular video volume slider styling (no rounded corners) */
+    #videoVol{appearance:none;-webkit-appearance:none;width:110px;height:14px;background:linear-gradient(#131a24,#0d131b);border:1px solid #2b3b4a;outline:none;padding:0;margin:0 0 0 12px;cursor:pointer;vertical-align:middle;}
+    #videoVol:focus{outline:2px solid #2f6dff;outline-offset:2px;}
+    #videoVol::-webkit-slider-runnable-track{height:14px;background:linear-gradient(#162032,#0d131b);border:1px solid #2b3b4a;}
+    #videoVol::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:18px;height:18px;background:#ffdd57;border:1px solid #c7a320;margin-top:-3px;cursor:pointer;}
+    #videoVol::-webkit-slider-thumb:hover{filter:brightness(1.08);}
+    #videoVol::-moz-range-track{height:14px;background:linear-gradient(#162032,#0d131b);border:1px solid #2b3b4a;}
+    #videoVol::-moz-range-thumb{width:18px;height:18px;background:#ffdd57;border:1px solid #c7a320;cursor:pointer;}
+    #videoVol::-moz-range-thumb:hover{filter:brightness(1.08);}
+    #videoVol::-ms-track{height:14px;background:transparent;border-color:transparent;color:transparent;}
+    #videoVol::-ms-fill-lower,#videoVol::-ms-fill-upper{background:linear-gradient(#162032,#0d131b);border:1px solid #2b3b4a;}
+    #videoVol::-ms-thumb{width:18px;height:18px;background:#ffdd57;border:1px solid #c7a320;cursor:pointer;margin-top:0;}
+    #videoVol,#videoVol::-webkit-slider-runnable-track,#videoVol::-webkit-slider-thumb,#videoVol::-moz-range-track,#videoVol::-moz-range-thumb,#videoVol::-ms-track,#videoVol::-ms-fill-lower,#videoVol::-ms-fill-upper,#videoVol::-ms-thumb{border-radius:0;}
+</style>
+</head>
+<body>
+    <header>
+        <div>DEMO VIDEO</div>
+        <a class="back-link" href="../wasp-game.html" title="Back to Puzzle">PUZZLE</a>
+    </header>
+    <main>
+    <div class="video-wrapper edge-frame fade-in">
+            <a href="https://youtu.be/IgujsUHP3CI" 
+               target="_blank" 
+               id="demoVideo" 
+               style="position:absolute;inset:0;width:100%;height:100%;display:block;background:url('demo.png') center center / cover no-repeat;border-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFQAAABUCAYAAAAcaxDBAAADLklEQVR4AeyZgUkDURBEYwqxOQuwFguwORtRAge5/5bLONlVgo4QknFnZ/+9O5aI55P58/H++rl/qfa99/JZ+d36JdN5ufmu3wbqDvhv/gAdvuMB+tNAuY847/nl7Wn/Yp167718Zl3NU3XmXWbcerl5zFf9eUJJrKkDtAmQ7QFKIk1dgHL/cGdQN+efOE/lcT77WWce/ayzn1r1F6AcEO0RCFCPl3QHqETkGe4BukzgjlmK3xDsp/5GxGJRO24xDwietw104Ex/KiJAh29ngP42UO4kap6HO4WafpXX9XO+0u48nj9PKAk2dYA2AbI9QEmkqQtQ7phmvmznPO4kBtCvNPuVVvNVfwGqGlK/TSBAb/OxqwFqI7vdcOYO6u6Qg3Fjv1bnU/Wxg2xB5JcndAMz9RagUyS3nADdQEy9SaDcERysdtaj1Xkeal6f0uyXQFVg6iuBAF15tFWAthGuAQUodyZ3xNquFfN0x6yD86k5rVsvQDkg2iMQoB4v6Q5QicgznLkjqblTqNU45in/rj7ykfOpp68nT+jIbbuGBOiVxsinAB3BeA0pQN2dovyqfj3Kz3zifGo1lX5q9hegNER7BALU4yXdASoReYYClN/TqFU8/dSqf7qu5qs6z6P8BSgDoj0CAerxku4AlYg8QwGqvmcxnjuF/dTsH9Ylzp3P66FmHnUBWk6UX1gEAtTCpc0BqhlZjgKUO4Npbl35mT+tu/O5I1VeATp9Qf8tL0CH73iATgPljnDz2a808+l/tLramTxvnlASaeoAbQJke4CSSFOX/8s382R7d2fKAb7B6uD5uWPzhFo4tTlANSPLEaAWLm22gXKH6BGrgztH6bX7dOJ89tM/rdU8G+j0Af9aXoAO39EAnQbKncR8VedOUZr51Gqe63fPw/nUnE+dJ5REmjpAmwDZHqAk0tQP97e8uh53J7p5yr/VD9/yhB6iua8QoPdxO+wK0EM09xUKUH7vcncW+3ks5tHPOvup2c+6qzmfWs0rQN0DxL8SCNCVR1sFaBvhGlCAcmesdq3Yz51DrRKZR7+qu/OUX80rQHngaI9AgHq8pDtAJSLP8AUAAP//UrixDQAAAAZJREFUAwC3BUt4fV+wZgAAAABJRU5ErkJggg==') 28 / 28px / 0 round;border-width:28px;border-style:solid;box-sizing:border-box;cursor:pointer;transition:opacity 0.3s;">
+            </a>
+            <div class="auto-msg" id="autoMsg" style="display:none;">Click to watch video</div>
+        </div>
+    </main>
+    <footer>
+    <button id="backPortfolioBtn" style="background:#161b22;color:#ffef60;border:1px solid #333;padding:10px 18px;font-size:13px;letter-spacing:1px;cursor:pointer;transition:.25s;font-family:'FacadeSud',Arial,sans-serif;" title="Back to Restroom">BACK TO RESTROOM</button>
+    <label for="videoVol" style="margin-left:24px;font-size:12px;letter-spacing:1px;color:#d0d9e2;">VOLUME</label>
+    <input id="videoVol" type="range" min="0" max="1" step="0.01" value="0.7" />
+    </footer>
+<script>
+(function(){
+    const params = new URLSearchParams(window.location.search);
+    const auto = params.get('auto');
+    const autoMsg = document.getElementById('autoMsg');
+    const videoLink = document.getElementById('demoVideo');
+    
+    // Add hover effect
+    if(videoLink) {
+        videoLink.addEventListener('mouseenter', function() {
+            this.style.opacity = '0.8';
+        });
+        videoLink.addEventListener('mouseleave', function() {
+            this.style.opacity = '1';
+        });
+    }
+    
+    if(auto === '1') {
+        autoMsg.style.display='block';
+        autoMsg.textContent='Click image to watch video on YouTube';
+    }
+    
+    // Back button
+    document.getElementById('backPortfolioBtn').addEventListener('click',()=>{
+         window.location.href = '../../index.html';
+    });
+    
+    // Hide volume control
+    const videoVol = document.getElementById('videoVol');
+    const volLabel = document.querySelector('label[for="videoVol"]');
+    if(videoVol) videoVol.style.display = 'none';
+    if(volLabel) volLabel.style.display = 'none';
+})();
+/* Decorative high-density GIF system (shared with puzzle) */
+const decorGifs = [
+    '../gif/automobile-111_256.gif','../gif/bee-11531_256.gif','../gif/cars-4869_256.gif','../gif/flower-12278_256.gif','../gif/flower-8212_256.gif','../gif/flower-8213_256.gif','../gif/flower-8216_256.gif','../gif/flower-8348_256.gif','../gif/late-afternoon-11529_256.gif','../gif/leaf-13308_256.gif','../gif/leaf-21252_512.gif','../gif/plane-112_256.gif','../gif/taxi-279_256.gif','../gif/traffic-lights-8994_256.gif','../gif/tree-8614_256.gif','../gif/vacations-106_256.gif','../gif/wasp.gif'
+];
+const gifLayer = document.createElement('div');
+gifLayer.id='gifDecorLayer';
+gifLayer.style.position='fixed';
+gifLayer.style.inset='0';
+gifLayer.style.pointerEvents='none';
+gifLayer.style.zIndex='1'; // behind video wrapper
+document.body.appendChild(gifLayer);
+const styleEl = document.createElement('style');
+styleEl.textContent = `#gifDecorLayer .decor-gif{position:absolute;image-rendering:pixelated;opacity:0;animation:gifFadeCycle 20s ease-in-out infinite;will-change:transform,opacity;filter:drop-shadow(0 0 6px rgba(255,255,255,.15)) brightness(1.05) saturate(1.15);}@keyframes gifFadeCycle{0%{opacity:0;transform:scale(.8) rotate(0deg)}6%{opacity:.85;transform:scale(.9) rotate(4deg)}18%{opacity:1;transform:scale(1) rotate(-3deg)}40%{opacity:.92;transform:scale(1.05) rotate(2deg)}60%{opacity:.7;transform:scale(1.02) rotate(-2deg)}78%{opacity:.4;transform:scale(.94) rotate(1deg)}92%{opacity:.15;transform:scale(.86) rotate(-1deg)}100%{opacity:0;transform:scale(.8) rotate(0deg)}}`;
+document.head.appendChild(styleEl);
+function spawnDecorGifs(){
+    gifLayer.innerHTML='';
+    const density = Math.min(16, decorGifs.length); // slightly reduced
+    const picked = decorGifs.slice().sort(()=>Math.random()-0.5).slice(0,density);
+    const vw=window.innerWidth; const vh=window.innerHeight;
+    const videoRect = document.querySelector('.video-wrapper').getBoundingClientRect();
+    const placedRects = [];
+    function intersects(x,y,w,h,rect){
+        return !(x+w < rect.left || x > rect.right || y+h < rect.top || y > rect.bottom);
+    }
+    function overlaps(x,y,w,h){
+        for(const r of placedRects){ if(!(x+w < r.x || x > r.x+r.w || y+h < r.y || y > r.y+r.h)) return true; }
+        return false;
+    }
+    picked.forEach((src,i)=>{
+        const img = document.createElement('img');
+        img.src = src; img.alt=''; img.className='decor-gif';
+        const t = Math.random(); let size;
+        if(t < .30){ size = 50 + Math.random()*50; }
+        else if(t < .60){ size = 100 + Math.random()*60; }
+        else if(t < .85){ size = 150 + Math.random()*60; }
+        else { size = 190 + Math.random()*50; }
+        if(/leaf-|traffic/.test(src) && size > 180){ size = 150 + Math.random()*40; }
+        img.style.width = size+'px'; img.style.height='auto';
+        let x = Math.random()*(vw - size);
+        let y = Math.random()*(vh - size);
+        let tries=0;
+        while(tries<90 && (intersects(x,y,size,size,videoRect) || overlaps(x,y,size,size))){
+            x = Math.random()*(vw - size);
+            y = Math.random()*(vh - size);
+            tries++;
+        }
+        // If still intersecting after attempts, push it just outside video area horizontally
+        if(intersects(x,y,size,size,videoRect)){
+            if(x < videoRect.left){ x = videoRect.left - size - 8; }
+            else { x = videoRect.right + 8; }
+            if(x < 0) x = 0; if(x+size > vw) x = vw - size;
+        }
+        img.style.left = x+'px'; img.style.top = y+'px';
+        img.style.animationDelay = (i*0.6 + Math.random()*1.0).toFixed(2)+'s';
+        gifLayer.appendChild(img);
+        placedRects.push({x,y,w:size,h:size});
+    });
+}
+spawnDecorGifs();
+setInterval(spawnDecorGifs,20000);
+window.addEventListener('resize',()=>{ spawnDecorGifs(); });
+</script>
+</body>
+</html>

@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Hong Kong</title>
+    <style>
+        @font-face {
+            font-family: 'FacadeSud';
+            src: url('fonts/Facade-Sud-Ouest.otf') format('opentype');
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Gulax';
+            src: url('fonts/Gulax-Regular.otf') format('opentype');
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'KaeruKaeru';
+            src: url('fonts/kaerukaeru-Regular.otf') format('opentype');
+            font-display: swap;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000000 url('hongkong/bg.jpg') center center / cover no-repeat fixed;
+            color: #ffffff;
+            font-family: 'FacadeSud', Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+        /* Digital texture overlays */
+        body::before, body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+        /* Moving grain */
+        body::before {
+            background: repeating-radial-gradient(circle at 25% 25%, rgba(255,255,255,0.04) 0 2px, transparent 2px 4px),
+                        repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 2px);
+            mix-blend-mode: overlay;
+            animation: grainShift 9s linear infinite;
+            opacity: .55;
+        }
+        /* Scanlines + grid */
+                        body::after {
+                                /* Reintroduced a very subtle dark mask + existing scanlines */
+                                background:
+                                    linear-gradient(rgba(0,0,0,0.22), rgba(0,0,0,0.25)),
+                                    radial-gradient(circle at 50% 55%, rgba(0,0,0,0.18), rgba(0,0,0,0.3) 68%),
+                                    repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 3px),
+                                    repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 3px);
+                                mix-blend-mode: soft-light;
+                                animation: scanScroll 6s linear infinite;
+                                opacity: .36;
+                        }
+        @keyframes grainShift { 0% {transform:translate(0,0)} 50% {transform:translate(-2%,1%)} 100% {transform:translate(0,0)} }
+        @keyframes scanScroll { 0% {background-position:0 0,0 0,0 0} 100% {background-position:0 100px,0 200px,0 160px} }
+        .portfolio-container {
+            width: 100vw;
+            height: 100vh;
+            background: transparent; /* remove semi-transparent film */
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 2; /* above texture */
+        }
+        .header {
+            background: #222222;
+            padding: 20px;
+            border-bottom: 2px solid #333333;
+        }
+        h1 {
+            text-align: center;
+            font-size: clamp(34px,5.2vw,62px);
+            margin: 0;
+            color: #ffef60; /* changed to yellow per request */
+            font-weight: 600;
+            letter-spacing: 3px;
+            font-family: 'KaeruKaeru','FacadeSud', Arial, sans-serif; /* switched to KaeruKaeru */
+            text-transform: uppercase;
+        }
+        .controls {
+            display: none;
+        }
+        .portfolio-display {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000000;
+            overflow: hidden;
+            position: relative;
+            cursor: none;
+        }
+        .click-area {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 50%;
+            z-index: 10;
+        }
+        .click-area.left {
+            left: 0;
+        }
+        .click-area.right {
+            right: 0;
+        }
+        .portfolio-image {
+            max-width: 95vw;
+            max-height: calc(100vh - 80px);
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            transition: all 0.8s ease;
+        }
+        .portfolio-image.dissolve-out {
+            filter: contrast(0) brightness(0.3);
+            transform: scale(0.95);
+            opacity: 0;
+            image-rendering: pixelated;
+            animation: pixelDissolve 0.8s ease-in-out;
+        }
+        .portfolio-image.dissolve-in {
+            filter: contrast(0) brightness(0.3);
+            transform: scale(1.05);
+            opacity: 0;
+            image-rendering: pixelated;
+            animation: pixelReform 0.8s ease-in-out;
+        }
+        @keyframes pixelDissolve {
+            0% { 
+                filter: contrast(1) brightness(1); 
+                transform: scale(1);
+                opacity: 1;
+            }
+            25% {
+                filter: contrast(0.8) brightness(0.8);
+                image-rendering: pixelated;
+            }
+            50% {
+                filter: contrast(0.4) brightness(0.5);
+                transform: scale(0.98);
+            }
+            100% {
+                filter: contrast(0) brightness(0.3);
+                transform: scale(0.95);
+                opacity: 0;
+            }
+        }
+        @keyframes pixelReform {
+            0% {
+                filter: contrast(0) brightness(0.3);
+                transform: scale(1.05);
+                opacity: 0;
+            }
+            50% {
+                filter: contrast(0.4) brightness(0.5);
+                transform: scale(1.02);
+                opacity: 0.5;
+            }
+            75% {
+                filter: contrast(0.8) brightness(0.8);
+                image-rendering: pixelated;
+            }
+            100% {
+                filter: contrast(1) brightness(1);
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        /* Magnifying Glass */
+        .magnifier {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            pointer-events: none;
+            z-index: 20;
+            display: none;
+        }
+        .magnifier-lens {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border: 4px solid #ffffff;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.9);
+            overflow: hidden;
+        }
+        .magnified-content {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            top: 4px;
+            left: 4px;
+        }
+        /* Static Wasp */
+        .flying-wasp {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            z-index: 15;
+            cursor: pointer;
+            transition: transform 0.2s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+        .flying-wasp.visible {
+            opacity: 1;
+        }
+        .flying-wasp:hover {
+            transform: scale(1.1);
+            filter: brightness(1.2) drop-shadow(0 0 20px rgba(255, 255, 0, 0.5));
+        }
+        .flying-wasp.mirrored {
+            transform: scaleX(-1);
+        }
+        .flying-wasp.mirrored:hover {
+            transform: scaleX(-1) scale(1.1);
+        }
+        .footer {
+            background: #1a1a1a;
+            padding: 10px;
+            border-top: 1px solid #333333;
+            text-align: center;
+        }
+        .page-info {
+            font-size: 14px;
+            color: #cccccc;
+            margin-bottom: 10px;
+            font-family: 'FacadeSud', Arial, sans-serif;
+        }
+        .page-dots {
+            text-align: center;
+        }
+        .dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            margin: 0 4px;
+            background: #444444;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            border: 1px solid #666666;
+        }
+        .dot.active {
+            background: #ffffff;
+            border-color: #ffffff;
+        }
+    </style>
+        <style>
+            /* Sharp rectangular volume slider (remove any rounded corners) */
+            #bgmVol { -webkit-appearance:none; appearance:none; height:12px; background:#131313; border:2px solid #444; padding:0; margin:0 4px; border-radius:0; box-shadow:inset 0 0 0 1px #000; }
+            #bgmVol::-webkit-slider-runnable-track { height:12px; background:#131313; border-radius:0; border:0; }
+            #bgmVol::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:18px; height:18px; background:#fff; border:2px solid #ffef60; margin-top:-4px; border-radius:0; cursor:pointer; }
+            #bgmVol::-moz-range-track { height:12px; background:#131313; border:0; border-radius:0; }
+            #bgmVol::-moz-range-thumb { width:18px; height:18px; background:#fff; border:2px solid #ffef60; border-radius:0; cursor:pointer; }
+            #bgmVol::-ms-track { height:12px; background:transparent; border-color:transparent; color:transparent; }
+            #bgmVol::-ms-fill-lower, #bgmVol::-ms-fill-upper { background:#131313; border:0; border-radius:0; }
+            #bgmVol::-ms-thumb { width:18px; height:18px; background:#fff; border:2px solid #ffef60; border-radius:0; cursor:pointer; }
+            #bgmVol:focus { outline:2px solid #ffef60; outline-offset:2px; }
+        </style>
+</head>
+<body>
+    <div class="portfolio-container">
+        <div class="header">
+            <h1>PORTFOLIO</h1>
+        </div>
+        
+        <div class="portfolio-display" id="portfolioDisplay">
+            <div class="click-area left" id="leftArea"></div>
+            <div class="click-area right" id="rightArea"></div>
+            <img class="portfolio-image" id="portfolioImage" src="hongkong/protfolio/page01.png" alt="Portfolio Page 1">
+            <img class="flying-wasp" id="flyingWasp" src="hongkong/gif/wasp.gif" alt="Flying Wasp" style="display: none;">
+            <div class="magnifier" id="magnifier">
+                <div class="magnifier-lens">
+                    <img class="magnified-content" id="magnifiedContent" src="hongkong/protfolio/page01.png" alt="Magnified">
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="page-info" id="pageInfo">PAGE 1 / 5</div>
+            
+            <div class="page-dots" id="pageDots">
+                <span class="dot active" onclick="goToPage(0)"></span>
+                <span class="dot" onclick="goToPage(1)"></span>
+                <span class="dot" onclick="goToPage(2)"></span>
+                <span class="dot" onclick="goToPage(3)"></span>
+                <span class="dot" onclick="goToPage(4)"></span>
+            </div>
+        </div>
+    </div>
+    <!-- Background music (persistent) -->
+    <audio id="bgm" src="hongkong/bgmusic.MP3" preload="auto" loop style="display:none"></audio>
+    <div id="bgmCtrl" style="position:fixed;left:12px;bottom:12px;z-index:200;font-family:'FacadeSud',Arial,sans-serif;font-size:12px;background:#0a0a0a;padding:6px 10px;border:1px solid #222;color:#ccc;display:flex;gap:8px;align-items:center;">
+        <button id="bgmToggle" style="background:#161b22;border:1px solid #333;color:#ffef60;cursor:pointer;padding:4px 10px;font-size:11px;letter-spacing:1px;outline:none;border-radius:0;font-family:'FacadeSud',Arial,sans-serif;">PLAY</button>
+        <input id="bgmVol" type="range" min="0" max="1" step="0.01" value="0.7" style="width:80px;font-family:'FacadeSud',Arial,sans-serif;" />
+        <span id="bgmStatus" style="font-family:'FacadeSud',Arial,sans-serif;">Paused</span>
+    </div>
+
+    <script>
+                const pages = [
+            'hongkong/protfolio/page01.png',
+            'hongkong/protfolio/page02.png',
+            'hongkong/protfolio/page03.png',
+            'hongkong/protfolio/page04.png',
+            'hongkong/protfolio/page05.png'
+        ];
+        
+        let currentPage = 0;
+        let isAnimating = false;
+        
+        const image = document.getElementById('portfolioImage');
+        const magnifiedContent = document.getElementById('magnifiedContent');
+        const pageInfo = document.getElementById('pageInfo');
+        const dots = document.querySelectorAll('.dot');
+        const leftArea = document.getElementById('leftArea');
+        const rightArea = document.getElementById('rightArea');
+        const portfolioDisplay = document.getElementById('portfolioDisplay');
+        const magnifier = document.getElementById('magnifier');
+        const flyingWasp = document.getElementById('flyingWasp');
+
+        // Wasp functionality
+        let waspTimer;
+        let isWaspFlying = false;
+
+        function showWasp() {
+            if (isWaspFlying) return;
+            
+            isWaspFlying = true;
+            const isReverse = Math.random() > 0.5;
+            
+            // Random position within the viewport
+            const maxX = window.innerWidth - 600; // Account for wasp size
+            const maxY = window.innerHeight - 600;
+            const randomX = Math.random() * Math.max(maxX, 100);
+            const randomY = Math.random() * Math.max(maxY, 100) + 50;
+            
+            flyingWasp.style.left = randomX + 'px';
+            flyingWasp.style.top = randomY + 'px';
+            flyingWasp.style.display = 'block';
+            
+            // Add mirrored class randomly
+            if (isReverse) {
+                flyingWasp.classList.add('mirrored');
+            } else {
+                flyingWasp.classList.remove('mirrored');
+            }
+            
+            // Fade in
+            setTimeout(() => {
+                flyingWasp.classList.add('visible');
+            }, 50);
+            
+            // Stay visible for 2-3 seconds, then fade out
+            const stayTime = Math.random() * 1000 + 2000;
+            setTimeout(() => {
+                flyingWasp.classList.remove('visible');
+                setTimeout(() => {
+                    flyingWasp.style.display = 'none';
+                    isWaspFlying = false;
+                    scheduleNextWasp();
+                }, 300);
+            }, stayTime);
+        }
+
+        function scheduleNextWasp() {
+            const delay = Math.random() * 3000 + 2000; // 2-5 seconds
+            waspTimer = setTimeout(showWasp, delay);
+        }
+
+        // Navigate to puzzle mini-game when clicking the wasp
+        flyingWasp.setAttribute('tabindex', '0');
+        flyingWasp.setAttribute('aria-label', 'Enter puzzle game');
+        flyingWasp.addEventListener('click', function() {
+            window.location.href = 'hongkong/minigame/wasp-game.html';
+        });
+        flyingWasp.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                window.location.href = 'hongkong/minigame/wasp-game.html';
+            }
+        });
+
+        function updatePage(direction = 'none') {
+            if (isAnimating) return;
+            
+            pageInfo.textContent = `PAGE ${currentPage + 1} / ${pages.length}`;
+            
+            // Update dot states
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentPage);
+            });
+
+            // Update magnified content
+            magnifiedContent.src = pages[currentPage];
+            
+            if (direction !== 'none') {
+                isAnimating = true;
+                
+                // Add pixel dissolve animation
+                image.classList.add('dissolve-out');
+                
+                setTimeout(() => {
+                    image.src = pages[currentPage];
+                    image.alt = `Portfolio Page ${currentPage + 1}`;
+                    
+                    // Reset and add dissolve in animation
+                    image.classList.remove('dissolve-out');
+                    image.classList.add('dissolve-in');
+                    
+                    setTimeout(() => {
+                        image.classList.remove('dissolve-in');
+                        isAnimating = false;
+                    }, 800);
+                }, 400);
+            } else {
+                image.src = pages[currentPage];
+                image.alt = `Portfolio Page ${currentPage + 1}`;
+            }
+        }
+
+        function goToPage(pageIndex) {
+            if (pageIndex >= 0 && pageIndex < pages.length && !isAnimating) {
+                const direction = pageIndex > currentPage ? 'next' : 'prev';
+                currentPage = pageIndex;
+                updatePage(direction);
+            }
+        }
+
+        function nextPage() {
+            if (currentPage < pages.length - 1) {
+                currentPage++;
+                updatePage('next');
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 0) {
+                currentPage--;
+                updatePage('prev');
+            }
+        }
+
+        // Left and right click areas
+        leftArea.addEventListener('click', prevPage);
+        rightArea.addEventListener('click', nextPage);
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') {
+                prevPage();
+            } else if (e.key === 'ArrowRight') {
+                nextPage();
+            }
+        });
+
+        // Magnifying glass functionality
+        portfolioDisplay.addEventListener('mousemove', function(e) {
+            const rect = portfolioDisplay.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Position magnifier (center on cursor)
+            magnifier.style.left = (x - 75) + 'px';
+            magnifier.style.top = (y - 75) + 'px';
+            magnifier.style.display = 'block';
+            
+            // Calculate magnification
+            const imageRect = image.getBoundingClientRect();
+            const imageX = e.clientX - imageRect.left;
+            const imageY = e.clientY - imageRect.top;
+            
+            if (imageX >= 0 && imageX <= imageRect.width && imageY >= 0 && imageY <= imageRect.height) {
+                magnifiedContent.style.width = (imageRect.width * 2.5) + 'px';
+                magnifiedContent.style.height = (imageRect.height * 2.5) + 'px';
+                magnifiedContent.style.left = -(imageX * 2.5 - 71) + 'px';
+                magnifiedContent.style.top = -(imageY * 2.5 - 71) + 'px';
+            }
+        });
+
+        portfolioDisplay.addEventListener('mouseleave', function() {
+            magnifier.style.display = 'none';
+        });
+
+        // Background music persistence
+        const bgm = document.getElementById('bgm');
+        const bgmToggle = document.getElementById('bgmToggle');
+        const bgmVol = document.getElementById('bgmVol');
+        const bgmStatus = document.getElementById('bgmStatus');
+        let bgmReady = false;
+        function loadBgmState(){
+            try {
+                const st = JSON.parse(localStorage.getItem('HK_BGM_STATE')||'{}');
+                if(st.volume!==undefined) bgm.volume = st.volume;
+                if(st.time!==undefined) bgm.currentTime = st.time;
+            } catch(e){}
+        }
+        function saveBgmState(){
+            try {
+                localStorage.setItem('HK_BGM_STATE', JSON.stringify({volume:bgm.volume,time:bgm.currentTime}));
+            } catch(e){}
+        }
+        bgm.addEventListener('timeupdate',()=>{ if(bgmReady) saveBgmState(); });
+        bgmVol.addEventListener('input',()=>{ bgm.volume = bgmVol.value; saveBgmState(); });
+        bgmToggle.addEventListener('click',()=>{
+            if(bgm.paused){
+                playBgm();
+            } else {
+                bgm.pause();
+                bgmStatus.textContent='Paused';
+                bgmToggle.textContent='PLAY';
+                saveBgmState();
+            }
+        });
+        function playBgm(){
+            const p = bgm.play();
+            if(p && p.catch){ p.catch(()=>{}); }
+            bgmStatus.textContent='Playing';
+            bgmToggle.textContent='PAUSE';
+            bgmReady = true;
+            saveBgmState();
+        }
+        loadBgmState();
+        bgmVol.value = bgm.volume;
+
+        // Attempt autoplay muted then unmute after user gesture if blocked
+        // Remove autoplay (may be blocked); rely on first user gesture anywhere
+        function firstGesture(){ if(!bgmReady){ playBgm(); } document.removeEventListener('click', firstGesture); }
+        document.addEventListener('click', firstGesture);
+
+                // Initialize portfolio
+        updatePage();
+        scheduleNextWasp();
+    </script>
+</body>
+</html>

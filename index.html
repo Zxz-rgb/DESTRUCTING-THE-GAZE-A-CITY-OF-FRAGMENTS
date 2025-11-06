@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WELCOME TO THE CITY OF ECHOES</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="custom-shadow.css">
+  <style>
+    @font-face {
+      font-family: 'Gulax';
+      src: url('fonts/Gulax-Regular.otf') format('opentype');
+      font-display: swap;
+    }
+    .site-title {
+      position:fixed;
+      top:12px;
+      left:50%;
+      transform:translateX(-50%);
+      z-index:1000;
+      margin:0;
+      padding:6px 14px 8px;
+      font-family:'Gulax', Arial, sans-serif;
+      font-size: clamp(32px, 6vw, 64px);
+      letter-spacing:2px;
+      color:#FFFFFF;
+      text-transform:none;
+      user-select:none;
+      white-space:nowrap;
+      text-shadow:0 -1px 4px #FFFFFF, 0 -2px 10px #ffff00, 0 -10px 20px #ff8000, 0 -18px 40px #FF0000;
+    }
+    @media (max-width:700px){
+      .site-title{font-size:clamp(20px,6vw,34px);padding:4px 12px;}
+    }
+    
+    /* Button hover effect - enhance the edge glow */
+    #mirror-portal:hover {
+      box-shadow: 
+        0 0 0 1px rgba(255, 128, 0, 1.0),
+        0 0 0 2px rgba(255, 255, 0, 0.8),
+        0 0 0 4px rgba(255, 239, 96, 0.6),
+        0 0 12px 3px rgba(255, 128, 0, 0.5),
+        0 0 24px 6px rgba(255, 255, 0, 0.3) !important;
+    }
+    
+    /* Add orange to yellow gradient glow only on edges */
+    #mirror-portal {
+      box-shadow: 
+        0 0 0 1px rgba(255, 128, 0, 0.8),
+        0 0 0 2px rgba(255, 255, 0, 0.6),
+        0 0 0 3px rgba(255, 239, 96, 0.4),
+        0 0 8px 2px rgba(255, 128, 0, 0.3),
+        0 0 16px 4px rgba(255, 255, 0, 0.2) !important;
+      max-width: 300px !important;
+      width: auto !important;
+    }
+    
+    /* Keep original text styling with smaller font size */
+    #portal-text {
+      box-shadow: none !important;
+      text-shadow: 0 -1px 4px #FFFFFF, 0 -2px 10px #ffff00, 0 -10px 20px #ff8000, 0 -18px 40px #FF0000 !important;
+      font-size: clamp(18px, 4vw, 32px) !important;
+    }
+    
+    /* Add glow to "break the gaze" text */
+    #portal-overlay {
+      text-shadow: 0 -1px 4px #FFFFFF, 0 -2px 10px #ffff00, 0 -10px 20px #ff8000, 0 -18px 40px #FF0000 !important;
+    }
+    
+    /* Make button glow always visible, not just on hover */
+    #mirror-portal {
+      box-shadow: 0 0 8px rgba(255, 128, 0, 0.8), 0 0 16px rgba(255, 255, 0, 0.6), 0 0 24px rgba(255, 239, 96, 0.4), 0 0 32px rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    /* Arrow always visible glow effect */
+    .arrow-container .arrow,
+    .arrow-container,
+    .arrow {
+      filter: drop-shadow(0 -1px 1px rgba(255,255,255,0.6)) drop-shadow(0 -2px 2px rgba(255,255,0,0.4)) drop-shadow(0 -3px 4px rgba(255,128,0,0.3)) drop-shadow(0 -4px 6px rgba(255,0,0,0.2)) !important;
+      -webkit-filter: drop-shadow(0 -1px 1px rgba(255,255,255,0.6)) drop-shadow(0 -2px 2px rgba(255,255,0,0.4)) drop-shadow(0 -3px 4px rgba(255,128,0,0.3)) drop-shadow(0 -4px 6px rgba(255,0,0,0.2)) !important;
+    }
+    
+    /* Arrow hover shadow effect - enhanced glow on hover */
+    .arrow-container:hover .arrow,
+    .arrow-container:hover,
+    .arrow:hover {
+      filter: drop-shadow(0 -1px 1px rgba(255,255,255,1.0)) drop-shadow(0 -2px 3px rgba(255,255,0,0.8)) drop-shadow(0 -4px 6px rgba(255,128,0,0.6)) drop-shadow(0 -6px 10px rgba(255,0,0,0.4)) !important;
+      -webkit-filter: drop-shadow(0 -1px 1px rgba(255,255,255,1.0)) drop-shadow(0 -2px 3px rgba(255,255,0,0.8)) drop-shadow(0 -4px 6px rgba(255,128,0,0.6)) drop-shadow(0 -6px 10px rgba(255,0,0,0.4)) !important;
+    }
+    
+    /* Add cursor pointer for clickable elements */
+    .arrow-container, #portal-text {
+      cursor: pointer !important;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="site-title">WELCOME TO THE CITY OF ECHOES</h1>
+  
+  <!-- Quote text between title and button -->
+  <div class="quote-text" style="position: fixed; top: 180px; left: 50%; transform: translateX(-50%); z-index: 999; text-align: center; max-width: 80%; font-family: 'Gulax', Arial, sans-serif; font-style: italic; color: #FFFFFF; font-size: clamp(20px, 4vw, 32px); line-height: 1.4; text-shadow: 0 -1px 4px #FFFFFF, 0 -2px 10px #ffff00, 0 -10px 20px #ff8000, 0 -18px 40px #FF0000;">
+    A website can be a room, and a room can be a mirror. This final space reflects not only my works, but also the ways we inhabit the digital.
+  </div>
+  
+  <div id="restroom-container">
+    <!-- Centered background image / viewport still image -->
+    <img id="restroom-bg" src="assets/background01.png" alt="restroom background" />
+    
+    <!-- Floating arrows -->
+    <div class="arrow-container" id="arrow1" style="left: 25%; top: 70%;">
+      <div class="arrow up"></div>
+    </div>
+    <div class="arrow-container" id="arrow2" style="left: 50%; top: 70%;">
+      <div class="arrow up"></div>
+    </div>
+    <div class="arrow-container toilet-arrow" id="arrow3" style="left: 75%; top: 70%;">
+      <div class="arrow up"></div>
+    </div>
+
+    <!-- Foreground centered text that acts as the mirror portal -->
+    <div id="mirror-portal" class="text-portal">
+      <div id="portal-text">ENTER THE CITY</div>
+      <div id="portal-overlay">break the gaze</div>
+    </div>
+
+    <!-- Mirror overlay that fades in and contains video -->
+    <div id="mirror-overlay">
+      <video id="mirror-video" autoplay playsinline style="display:none"></video>
+      <!-- processed canvas that shows filtered webcam frames -->
+      <canvas id="mirror-canvas" width="1920" height="1080"></canvas>
+      <div id="mirror-text">Mirror activated</div>
+      <div id="controls" aria-hidden="true">
+        <label>Saturation <input id="saturation" type="range" min="0" max="3" step="0.05" value="1"></label>
+        <label>Contrast <input id="contrast" type="range" min="0" max="3" step="0.05" value="1"></label>
+        <label>Brightness <input id="brightness" type="range" min="0" max="2" step="0.01" value="1"></label>
+        <label>Blur <input id="blur" type="range" min="0" max="10" step="0.5" value="0"></label>
+        <label>Grain <input id="grain" type="range" min="0" max="1" step="0.01" value="0"></label>
+        <label>Sharpen <input id="sharpen" type="checkbox"></label>
+      </div>
+      <div id="click-hint" aria-hidden="false" style="display:block;position:absolute;bottom:80px;left:50%;transform:translateX(-50%);color:#ffef60;font-size:18px;letter-spacing:1px;opacity:1;font-family:'FacadeSud',Arial,sans-serif;font-style:italic;">click the mirror to return</div>
+      <button id="continue-btn" aria-hidden="true">Continue</button>
+    </div>
+    <!-- confetti canvas (playful particles) -->
+    <canvas id="confetti-canvas" aria-hidden="true"></canvas>
+  </div>
+
+  <script>
+    // Mirror functionality and navigation logic
+    document.addEventListener('DOMContentLoaded', function() {
+      const restroomBg = document.getElementById("restroom-bg");
+      const overlay = document.getElementById("mirror-overlay");
+      const video = document.getElementById("mirror-video");
+      const text = document.getElementById("mirror-text");
+      const portal = document.getElementById("mirror-portal");
+      let cameraActivated = false;
+
+      // Portal click to activate mirror
+      if (portal) {
+        portal.addEventListener('click', () => {
+          if (!cameraActivated) {
+            cameraActivated = true;
+            activateMirror();
+          }
+        });
+      }
+
+      function activateMirror() {
+        restroomBg.style.filter = "brightness(0.3)";
+        overlay.style.opacity = "1";
+        overlay.style.pointerEvents = 'auto';
+        text.style.opacity = '1';
+
+        const portalEl = document.getElementById('mirror-portal');
+        if (portalEl) portalEl.classList.add('portal-hidden');
+        
+        // Try to access camera
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false })
+          .then((stream) => {
+            video.srcObject = stream;
+            video.addEventListener('playing', () => {
+              startCanvasProcessing(video);
+              // Show controls and continue button
+              const ctrls = document.getElementById('controls');
+              if (ctrls) ctrls.setAttribute('aria-hidden','false');
+              const btn = document.getElementById('continue-btn');
+              if (btn) {
+                btn.classList.add('show');
+                btn.setAttribute('aria-hidden','false');
+              }
+              // Show click hint
+              const hint = document.getElementById('click-hint');
+              if (hint) {
+                hint.style.display = 'block';
+                hint.setAttribute('aria-hidden','false');
+              }
+            }, { once: true });
+            video.play().catch(()=>{});
+          })
+          .catch((err) => {
+            console.warn('Camera permission denied:', err);
+            text.textContent = 'Camera unavailable — click to continue';
+            // Show continue button even if camera fails
+            const btn = document.getElementById('continue-btn');
+            if (btn) {
+              btn.classList.add('show');
+              btn.setAttribute('aria-hidden','false');
+            }
+          });
+      }
+
+      // Canvas processing for mirror effect
+      function startCanvasProcessing(videoEl) {
+        const canvas = document.getElementById('mirror-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        function resize() {
+          const w = Math.min(window.innerWidth*0.8, 900);
+          const h = w * (videoEl.videoHeight / videoEl.videoWidth || 0.75);
+          canvas.width = Math.max(1920, Math.floor(w));
+          canvas.height = Math.max(1080, Math.floor(h));
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        const sat = document.getElementById('saturation');
+        const contrast = document.getElementById('contrast');
+        const bright = document.getElementById('brightness');
+        const blur = document.getElementById('blur');
+
+        function draw() {
+          ctx.save();
+          ctx.filter = `saturate(${sat.value}) contrast(${contrast.value}) brightness(${bright.value}) blur(${blur.value}px)`;
+          // Mirror horizontally
+          ctx.translate(canvas.width, 0);
+          ctx.scale(-1,1);
+          ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+          ctx.restore();
+          requestAnimationFrame(draw);
+        }
+        draw();
+      }
+
+      // Click on canvas or continue button to go to hongkong.html
+      document.addEventListener('click', (e) => {
+        const canvas = document.getElementById('mirror-canvas');
+        const btn = document.getElementById('continue-btn');
+        if (!cameraActivated) return;
+        if (e.target === canvas || e.target === btn) {
+          window.location.href = 'hongkong.html';
+        }
+      });
+      
+      // Add click events to all arrow buttons to go directly to hongkong.html
+      const arrowContainers = document.querySelectorAll('.arrow-container');
+      arrowContainers.forEach(function(arrow) {
+        arrow.addEventListener('click', function() {
+          window.location.href = 'hongkong.html';
+        });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,347 @@
+/* Puzzle Game CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: #0a0a0a;
+    color: #ffffff;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.game-container {
+    width: 100vw;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
+    padding: 20px;
+}
+
+.game-header {
+    text-align: center;
+    padding: 20px 0 40px 0;
+    border-bottom: 2px solid #333;
+    margin-bottom: 30px;
+}
+
+.game-header h1 {
+    font-size: 2.8rem;
+    font-weight: bold;
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+    background: linear-gradient(45deg, #ffffff, #cccccc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.game-header h2 {
+    font-size: 1.4rem;
+    font-weight: normal;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+    color: #888888;
+}
+
+.subtitle {
+    font-size: 1rem;
+    color: #666666;
+    font-style: italic;
+}
+
+.game-interface {
+    display: flex;
+    gap: 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.game-controls {
+    width: 300px;
+    background: #222222;
+    border: 2px solid #444444;
+    padding: 25px;
+    height: fit-content;
+}
+
+.pattern-selector h3,
+.fragments-container h4 {
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    color: #cccccc;
+    border-bottom: 1px solid #444444;
+    padding-bottom: 8px;
+}
+
+.pattern-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 25px;
+}
+
+.pattern-btn {
+    padding: 12px 15px;
+    background: #333333;
+    border: 2px solid #555555;
+    color: #ffffff;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pattern-btn:hover {
+    background: #444444;
+    border-color: #666666;
+}
+
+.pattern-btn.active {
+    background: #555555;
+    border-color: #777777;
+    color: #ffffff;
+}
+
+.game-stats {
+    margin-bottom: 25px;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 0.8rem;
+}
+
+.stat-label {
+    color: #888888;
+}
+
+.stat-value {
+    color: #ffffff;
+    font-family: monospace;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.action-btn {
+    padding: 12px 15px;
+    background: #444444;
+    border: 2px solid #666666;
+    color: #ffffff;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+    background: #555555;
+    border-color: #777777;
+}
+
+.return-btn {
+    background: #2a2a2a;
+    border-color: #444444;
+    margin-top: 15px;
+}
+
+.return-btn:hover {
+    background: #333333;
+}
+
+.puzzle-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.puzzle-grid {
+    width: 450px;
+    height: 450px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 2px;
+    background: #333333;
+    border: 3px solid #555555;
+    margin: 0 auto;
+}
+
+.puzzle-slot {
+    background: #1a1a1a;
+    border: 2px dashed #444444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.puzzle-slot:hover {
+    background: #252525;
+    border-color: #666666;
+}
+
+.puzzle-slot.occupied {
+    border-style: solid;
+    border-color: #777777;
+    background: #2a2a2a;
+}
+
+.puzzle-piece {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: grab;
+    transition: all 0.2s ease;
+}
+
+.puzzle-piece:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}
+
+.puzzle-piece.dragging {
+    opacity: 0.7;
+    transform: scale(1.1);
+    z-index: 1000;
+}
+
+.fragments-container {
+    background: #222222;
+    border: 2px solid #444444;
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.fragments-pool {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    min-height: 200px;
+    background: #1a1a1a;
+    border: 2px solid #333333;
+    padding: 15px;
+}
+
+.fragment-slot {
+    width: 100px;
+    height: 100px;
+    background: #2a2a2a;
+    border: 2px dashed #555555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.fragment-piece {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: grab;
+    border: 2px solid #666666;
+}
+
+.fragment-piece:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+    z-index: 10;
+}
+
+.completion-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.completion-content {
+    background: #222222;
+    border: 3px solid #555555;
+    padding: 40px;
+    text-align: center;
+    max-width: 500px;
+}
+
+.completion-content h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+}
+
+.completion-content p {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    color: #cccccc;
+}
+
+.completion-content .action-btn {
+    margin: 10px;
+    display: inline-block;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .game-interface {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .game-controls {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .pattern-buttons {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .puzzle-grid {
+        width: 350px;
+        height: 350px;
+    }
+}
+
+@media (max-width: 768px) {
+    .game-header h1 {
+        font-size: 2rem;
+    }
+    
+    .puzzle-grid {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .fragments-pool {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+    
+    .fragment-slot {
+        width: 80px;
+        height: 80px;
+    }
+}
